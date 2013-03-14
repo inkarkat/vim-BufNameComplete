@@ -1,0 +1,100 @@
+*BufNameComplete.txt*   Insert mode completion of filenames loaded in Vim.
+
+		     BUF NAME COMPLETE    by Ingo Karkat
+							 *BufNameComplete.vim*
+description			|BufNameComplete-description|
+usage				|BufNameComplete-usage|
+installation			|BufNameComplete-installation|
+configuration			|BufNameComplete-configuration|
+limitations			|BufNameComplete-limitations|
+known problems			|BufNameComplete-known-problems|
+todo				|BufNameComplete-todo|
+history				|BufNameComplete-history|
+
+==============================================================================
+DESCRIPTION					 *BufNameComplete-description*
+
+The built-in filename completion |i_CTRL-X_CTRL-F| searches the file system
+based on the current directory, so potentially there can be many matches.
+But often, the file one wants to refer to is already open inside Vim.
+
+This plugin offers an alternative filename completion that just considers
+buffers loaded in Vim. Matches can start at any path component, so the mapping
+is especially useful for inserting relative paths, e.g. in
+    #include "lib/f| ~
+
+SOURCE									     *
+
+This completion type was motivated by this Stack Overflow question:
+    http://stackoverflow.com/questions/13406751/vim-completion-based-on-buffer-name
+
+SEE ALSO								     *
+
+- Check out the |CompleteHelper.vim| plugin page (vimscript #3914) for a full
+  list of insert mode completions powered by it.
+
+==============================================================================
+USAGE						       *BufNameComplete-usage*
+
+In insert mode, invoke the completion via CTRL-X f
+You can then search forward and backward via CTRL-N / CTRL-P, as usual.
+								  *i_CTRL-X_f*
+CTRL-X f		Search for filenames loaded in Vim buffers (|:ls|)
+			that start with the same 'isfname' characters as
+			before the cursor.
+			Any path component or the file name itself can start
+			with the characters. When there are no filename
+			characters before the cursor, both filename and
+			filespec (relative to the current directory) of all
+			loaded buffers are listed.
+
+==============================================================================
+INSTALLATION					*BufNameComplete-installation*
+
+This script is packaged as a |vimball|. If you have the "gunzip" decompressor
+in your PATH, simply edit the *.vmb.gz package in Vim; otherwise, decompress
+the archive first, e.g. using WinZip. Inside Vim, install by sourcing the
+vimball or via the |:UseVimball| command. >
+    vim BufNameComplete*.vmb.gz
+    :so %
+To uninstall, use the |:RmVimball| command.
+
+DEPENDENCIES					*BufNameComplete-dependencies*
+
+- Requires Vim 7.0 or higher.
+- Requires the |CompleteHelper.vim| plugin (vimscript #3914), version 1.10 or
+  higher.
+
+==============================================================================
+CONFIGURATION				       *BufNameComplete-configuration*
+
+For a permanent configuration, put the following commands into your |vimrc|:
+
+						       *BufNameComplete-remap*
+If you want to use a different mapping, map your keys to the
+<Plug>(BufNameComplete) mapping target _before_ sourcing the script (e.g. in
+your |vimrc|): >
+    imap <C-x>f <Plug>(BufNameComplete)
+<
+==============================================================================
+LIMITATIONS					 *BufNameComplete-limitations*
+
+KNOWN PROBLEMS				      *BufNameComplete-known-problems*
+
+TODO							*BufNameComplete-todo*
+
+IDEAS						       *BufNameComplete-ideas*
+
+==============================================================================
+HISTORY						     *BufNameComplete-history*
+
+1.00	16-Nov-2012
+First published version.
+
+==============================================================================
+Copyright: (C) 2012 Ingo Karkat
+The VIM LICENSE applies to this script; see |copyright|.
+
+Maintainer:	Ingo Karkat <ingo@karkat.de>
+==============================================================================
+ vim:tw=78:ts=8:ft=help:norl:
