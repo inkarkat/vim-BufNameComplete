@@ -3,12 +3,13 @@
 " DEPENDENCIES:
 "   - CompleteHelper/Abbreviate.vim autoload script
 "
-" Copyright: (C) 2012 Ingo Karkat
+" Copyright: (C) 2012-2016 Ingo Karkat
 "   The VIM LICENSE applies to this script; see ':help copyright'.
 "
 " Maintainer:	Ingo Karkat <ingo@karkat.de>
 "
 " REVISION	DATE		REMARKS
+"   1.01.002	12-Apr-2016	Add visual mode mapping to select the used base.
 "   1.00.001	16-Nov-2012	file creation
 let s:save_cpo = &cpo
 set cpo&vim
@@ -54,12 +55,16 @@ function! s:FindMatches( filespec, base )
 endfunction
 function! BufNameComplete#BufNameComplete( findstart, base )
     if a:findstart
-	" Locate the start of the filename.
-	let l:startCol = searchpos('\f*\%#', 'bn', line('.'))[1]
-	if l:startCol == 0
-	    let l:startCol = col('.')
+	if s:selectedBaseCol
+	    return s:selectedBaseCol - 1    " Return byte index, not column.
+	else
+	    " Locate the start of the filename.
+	    let l:startCol = searchpos('\f*\%#', 'bn', line('.'))[1]
+	    if l:startCol == 0
+		let l:startCol = col('.')
+	    endif
+	    return l:startCol - 1 " Return byte index, not column.
 	endif
-	return l:startCol - 1 " Return byte index, not column.
     elseif empty(a:base)
 	" Show the file name and the filespec (relative to CWD) of all open
 	" buffers.
@@ -80,8 +85,16 @@ function! BufNameComplete#BufNameComplete( findstart, base )
 endfunction
 
 function! BufNameComplete#Expr()
+    let s:selectedBaseCol = 0
     set completefunc=BufNameComplete#BufNameComplete
     return "\<C-x>\<C-u>"
+endfunction
+
+function! BufNameComplete#Selected()
+    call BufNameComplete#Expr()
+    let s:selectedBaseCol = col("'<")
+
+    return "g`>" . (col("'>") == (col('$')) ? 'a' : 'i') . "\<C-x>\<C-u>"
 endfunction
 
 let &cpo = s:save_cpo
