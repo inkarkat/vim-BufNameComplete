@@ -1,0 +1,3 @@
+autoload/BufNameComplete.vim
+plugin/BufNameComplete.vim
+doc/BufNameComplete.txt
